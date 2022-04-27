@@ -1,7 +1,6 @@
 package deus_cc
 
 import (
-	"log"
 	"net/url"
 	"sync"
 
@@ -50,17 +49,7 @@ func Adder(event Event) bool {
 // Use an string as an input and return a int
 func Getter(url string) int {
 	storer := GetStorer()
-	log.Println(url)
-	log.Println(storer.counter[url])
 	return storer.counter[url]
-	// log.Println(storer.events)
-	// log.Println(storer.counter[url])
-	// for ev := range storer.events {
-	// 	if ev.Url == url {
-	// 		counter++
-	// 	}
-	// }
-	// return counter
 }
 
 func ValidateData(event Event) (bool, error) {
