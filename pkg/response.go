@@ -56,6 +56,17 @@ func responseBadRequest(w http.ResponseWriter) {
 	response(w, ra)
 }
 
+// responseUnprocessable calls response function with proper data to generate a Unprocessable Entity response
+func responseUnprocessable(w http.ResponseWriter, method string) {
+	ra := ResponseAPI{
+		Status:      http.StatusUnprocessableEntity,
+		Description: fmt.Sprintf("%s input data not valid, expected {'url':'[valid url]','uuid':'[valid uuid]',}", method),
+		Success:     false,
+	}
+
+	response(w, ra)
+}
+
 // responseOk calls response function with proper data to generate an OK response
 func responseOk(w http.ResponseWriter, success bool, visitors int) {
 	ra := ResponseAPI{
