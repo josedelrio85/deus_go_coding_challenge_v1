@@ -1,5 +1,11 @@
 package deus_cc
 
+import (
+	"net/url"
+
+	"github.com/google/uuid"
+)
+
 var events = make(map[Event]bool)
 
 // SetTestEvents is used to "mock" the event collector. Used for testing only
@@ -28,4 +34,17 @@ func Getter(url string) int {
 		}
 	}
 	return counter
+}
+
+func ValidateData(event Event) (bool, error) {
+	_, err := url.ParseRequestURI(event.Url)
+	if err != nil {
+		return false, err
+	}
+
+	_, err = uuid.Parse(event.Uuid)
+	if err != nil {
+		return false, err
+	}
+	return true, nil
 }
