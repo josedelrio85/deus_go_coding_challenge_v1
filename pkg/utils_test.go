@@ -11,19 +11,19 @@ import (
 func TestAdder(t *testing.T) {
 	assert := assert.New(t)
 
-	events := map[Event]bool{
+	events := []Event{
 		{
 			Url:  "http://web1.com/foo",
 			Uuid: "4e9ca7cc-2e11-4b8d-adc4-c77e6606dbff",
-		}: true,
+		},
 		{
 			Url:  "http://web1.com/bar",
 			Uuid: "653dfcae-67f3-4d73-89b6-8d0dc94781e4",
-		}: true,
+		},
 		{
 			Url:  "http://web1.com/foo",
 			Uuid: "eda0c9fd-a5a0-48f3-96d6-7c0c8b3b8f8b",
-		}: true,
+		},
 	}
 	SetTestEvents(events)
 
@@ -61,19 +61,19 @@ func TestAdder(t *testing.T) {
 func TestGetter(t *testing.T) {
 	assert := assert.New(t)
 
-	events := map[Event]bool{
+	events := []Event{
 		{
 			Url:  "http://web1.com/foo",
 			Uuid: "4e9ca7cc-2e11-4b8d-adc4-c77e6606dbff",
-		}: true,
+		},
 		{
 			Url:  "http://web1.com/bar",
 			Uuid: "653dfcae-67f3-4d73-89b6-8d0dc94781e4",
-		}: true,
+		},
 		{
 			Url:  "http://web1.com/foo",
 			Uuid: "eda0c9fd-a5a0-48f3-96d6-7c0c8b3b8f8b",
-		}: true,
+		},
 	}
 	SetTestEvents(events)
 
