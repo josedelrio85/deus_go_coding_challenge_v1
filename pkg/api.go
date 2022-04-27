@@ -2,7 +2,6 @@ package deus_cc
 
 import (
 	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
 )
@@ -18,7 +17,7 @@ func SetEvent() http.Handler {
 		if req.Method == http.MethodPost {
 			event := Event{}
 			if err := json.NewDecoder(req.Body).Decode(&event); err != nil {
-				responseError(w, fmt.Sprintf("Error decoding event payload => %s", err.Error()))
+				responseUnprocessable(w, "")
 				return
 			}
 			log.Printf("Inconming event: %v", event)
