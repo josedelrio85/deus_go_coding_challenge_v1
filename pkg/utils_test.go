@@ -25,7 +25,8 @@ func TestAdder(t *testing.T) {
 			Uuid: "eda0c9fd-a5a0-48f3-96d6-7c0c8b3b8f8b",
 		},
 	}
-	SetTestEvents(events)
+	s := GetStorer()
+	s.SetTestEvents(events)
 
 	tests := []struct {
 		Description    string
@@ -52,7 +53,7 @@ func TestAdder(t *testing.T) {
 
 	for _, test := range tests {
 		t.Run(test.Description, func(t *testing.T) {
-			result := Adder(test.Event)
+			result := s.Adder(test.Event)
 			assert.Equal(test.ExpectedResult, result)
 		})
 	}
@@ -75,7 +76,8 @@ func TestGetter(t *testing.T) {
 			Uuid: "eda0c9fd-a5a0-48f3-96d6-7c0c8b3b8f8b",
 		},
 	}
-	SetTestEvents(events)
+	s := GetStorer()
+	s.SetTestEvents(events)
 
 	tests := []struct {
 		Description    string
@@ -99,7 +101,7 @@ func TestGetter(t *testing.T) {
 
 	for _, test := range tests {
 		t.Run(test.Description, func(t *testing.T) {
-			result := Getter(test.Url)
+			result := s.Getter(test.Url)
 			if test.ExpectedResult {
 				assert.Greater(result, 0)
 			}
