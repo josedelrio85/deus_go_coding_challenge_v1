@@ -10,9 +10,12 @@ import (
 func main() {
 	log.Println("DEUS Go Coding Challenge v1 starting...")
 
+	handler := deus.Handler{
+		Storer: deus.GetStorer(),
+	}
 	mux := http.NewServeMux()
-	mux.Handle("/setevent", deus.SetEvent())
-	mux.Handle("/getevent", deus.GetDistinctVisitors())
+	mux.Handle("/setevent", handler.SetEvent())
+	mux.Handle("/getevent", handler.GetDistinctVisitors())
 
 	err := http.ListenAndServe(":8080", mux)
 	if err != nil {
