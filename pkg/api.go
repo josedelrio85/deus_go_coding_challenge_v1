@@ -23,6 +23,7 @@ func SetEvent() http.Handler {
 			log.Printf("Inconming event: %v", event)
 
 			if event.Url != "" && event.Uuid != "" {
+				ValidateData(event)
 				success := Adder(event)
 				responseOk(w, success, 0)
 				return
