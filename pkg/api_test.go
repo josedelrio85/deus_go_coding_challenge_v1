@@ -16,7 +16,7 @@ func TestSetEvent(t *testing.T) {
 	tests := []struct {
 		Description      string
 		Method           string
-		Payload          map[string]string
+		Payload          interface{}
 		ExpectedResponse int
 		ExpectedSucceed  bool
 	}{
@@ -39,6 +39,13 @@ func TestSetEvent(t *testing.T) {
 				"foobar": "foobar",
 			},
 			ExpectedResponse: http.StatusBadRequest,
+			ExpectedSucceed:  false,
+		},
+		{
+			Description:      "when HTTP method is allowed, but data is not valid",
+			Method:           http.MethodPost,
+			Payload:          "foobar",
+			ExpectedResponse: http.StatusUnprocessableEntity,
 			ExpectedSucceed:  false,
 		},
 		{
