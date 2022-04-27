@@ -1,8 +1,10 @@
 package deus_cc
 
 import (
+	"errors"
 	"testing"
 
+	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -102,6 +104,75 @@ func TestGetter(t *testing.T) {
 				assert.Greater(result, 0)
 			}
 			assert.Equal(test.ExpectedValue, result)
+		})
+	}
+}
+
+func TestValidateData(t *testing.T) {
+	assert := assert.New(t)
+
+	tests := []struct {
+		Description    string
+		Input          Event
+		ExpectedResult struct {
+			Success bool
+			Error   error
+		}
+	}{
+		{
+			Description: "when event URL property is not a valid url",
+			Input: Event{
+				Url: "foobar",
+			},
+			ExpectedResult: struct {
+				Success bool
+				Error   error
+			}{Success: false, Error: errors.New("")},
+		},
+		{
+			Description: "when event URL property is a valid url",
+			Input: Event{
+				Url:  "http://webfoo.bar/test/",
+				Uuid: uuid.New().String(),
+			},
+			ExpectedResult: struct {
+				Success bool
+				Error   error
+			}{Success: true, Error: nil},
+		},
+		{
+			Description: "when event UUID property is not a valid UUID",
+			Input: Event{
+				Url:  "http://webfoo.bar/test/",
+				Uuid: "foobar",
+			},
+			ExpectedResult: struct {
+				Success bool
+				Error   error
+			}{Success: false, Error: errors.New("")},
+		},
+		{
+			Description: "when event UUID property is a valid UUID",
+			Input: Event{
+				Url:  "http://webfoo.bar/test/",
+				Uuid: uuid.New().String(),
+			},
+			ExpectedResult: struct {
+				Success bool
+				Error   error
+			}{Success: true, Error: nil},
+		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.Description, func(t *testing.T) {
+			result, err := ValidateData(test.Input)
+			if !test.ExpectedResult.Success {
+				assert.NotNil(err)
+			} else {
+				assert.Nil(err)
+			}
+			assert.Equal(test.ExpectedResult.Success, result)
 		})
 	}
 }
