@@ -2,7 +2,6 @@ package deus_cc
 
 import (
 	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
 )
@@ -12,19 +11,24 @@ type Event struct {
 	Uuid string
 }
 
+type Handler struct {
+	Storer *Storer
+}
+
 // SetEvent is the handler to manage ingestion of events
-func SetEvent() http.Handler {
+func (h Handler) SetEvent() http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
 		if req.Method == http.MethodPost {
 			event := Event{}
 			if err := json.NewDecoder(req.Body).Decode(&event); err != nil {
-				responseError(w, fmt.Sprintf("Error decoding event payload => %s", err.Error()))
+				responseUnprocessable(w, "")
 				return
 			}
 			log.Printf("Inconming event: %v", event)
 
 			if event.Url != "" && event.Uuid != "" {
-				success := Adder(event)
+				ValidateData(event)
+				success := h.Storer.Adder(event)
 				responseOk(w, success, 0)
 				return
 			}
@@ -36,7 +40,7 @@ func SetEvent() http.Handler {
 }
 
 // GetDistinctVisitors is the handler to serve the number of distinct visitors of any given page
-func GetDistinctVisitors() http.Handler {
+func (h Handler) GetDistinctVisitors() http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
 		if req.Method == http.MethodGet {
 			url := req.URL.Query().Get("url")
@@ -44,8 +48,7 @@ func GetDistinctVisitors() http.Handler {
 				responseError(w, "URL param not found")
 				return
 			}
-
-			visitors := Getter(url)
+			visitors := h.Storer.Getter(url)
 			responseVisitors(w, true, visitors)
 			return
 		}

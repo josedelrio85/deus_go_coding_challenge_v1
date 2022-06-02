@@ -16,7 +16,7 @@ func TestSetEvent(t *testing.T) {
 	tests := []struct {
 		Description      string
 		Method           string
-		Payload          map[string]string
+		Payload          interface{}
 		ExpectedResponse int
 		ExpectedSucceed  bool
 	}{
@@ -42,6 +42,13 @@ func TestSetEvent(t *testing.T) {
 			ExpectedSucceed:  false,
 		},
 		{
+			Description:      "when HTTP method is allowed, but data is not valid",
+			Method:           http.MethodPost,
+			Payload:          "foobar",
+			ExpectedResponse: http.StatusUnprocessableEntity,
+			ExpectedSucceed:  false,
+		},
+		{
 			Description: "when HTTP method is allowed, and mandatory params are present",
 			Method:      http.MethodPost,
 			Payload: map[string]string{
@@ -51,6 +58,10 @@ func TestSetEvent(t *testing.T) {
 			ExpectedResponse: http.StatusOK,
 			ExpectedSucceed:  true,
 		},
+	}
+
+	handler := Handler{
+		Storer: GetStorer(),
 	}
 
 	for _, test := range tests {
@@ -66,8 +77,8 @@ func TestSetEvent(t *testing.T) {
 			req := httptest.NewRequest(test.Method, testServer.URL, bytes.NewBuffer(jsonStr))
 			res := httptest.NewRecorder()
 
-			handler := SetEvent()
-			handler.ServeHTTP(res, req)
+			h := handler.SetEvent()
+			h.ServeHTTP(res, req)
 			assert.Equal(res.Result().StatusCode, test.ExpectedResponse)
 		})
 	}
@@ -114,6 +125,10 @@ func TestGetDistinctVisitors(t *testing.T) {
 		},
 	}
 
+	handler := Handler{
+		Storer: GetStorer(),
+	}
+
 	for _, test := range tests {
 		t.Run(test.Description, func(t *testing.T) {
 
@@ -130,8 +145,8 @@ func TestGetDistinctVisitors(t *testing.T) {
 				req.URL.RawQuery = q.Encode()
 			}
 
-			handler := GetDistinctVisitors()
-			handler.ServeHTTP(res, req)
+			h := handler.GetDistinctVisitors()
+			h.ServeHTTP(res, req)
 			assert.Equal(res.Result().StatusCode, test.ExpectedResponse)
 		})
 	}
